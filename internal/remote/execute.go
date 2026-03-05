@@ -1,3 +1,12 @@
+package remote
+
+import (
+	"bytes"
+	"fmt"
+	"os/exec"
+	"strings"
+)
+
 // ExecuteRemote executes a mnemon command on the remote server via SSH.
 // It returns the stdout output and any error.
 // Uses SSH key authentication (no password required).
