@@ -22,6 +22,11 @@ var linkCmd = &cobra.Command{
 	Long:  "Create or update a typed edge between two insights. Used by Claude to create semantic edges after evaluating candidates.",
 	Args:  cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// Remote mode: execute on remote server via SSH
+		if IsRemoteMode() {
+			return executeRemoteCommand(cmd, args)
+		}
+
 		sourceID := args[0]
 		targetID := args[1]
 

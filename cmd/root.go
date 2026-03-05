@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/mnemon-dev/mnemon/internal/remote"
 	"github.com/mnemon-dev/mnemon/internal/store"
 	"github.com/spf13/cobra"
 )
@@ -12,9 +13,11 @@ import (
 var version = "dev"
 
 var (
-	dataDir   string
-	storeName string
-	readOnly  bool
+	dataDir      string
+	storeName    string
+	readOnly     bool
+	remoteMode   bool
+	remoteConfig *remote.Config
 )
 
 var rootCmd = &cobra.Command{
@@ -39,6 +42,13 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&dataDir, "data-dir", defaultDataDir, "base data directory (env: MNEMON_DATA_DIR)")
 	rootCmd.PersistentFlags().StringVar(&storeName, "store", "", "named memory store (overrides MNEMON_STORE and active file)")
 	rootCmd.PersistentFlags().BoolVar(&readOnly, "readonly", false, "open database in read-only mode (no WAL files, safe for read-only mounts)")
+	rootCmd.PersistentFlags().BoolVar(&remoteMode, "remote", false, "use remote database via SSH (env: MNEMON_REMOTE_HOST)")
+
+	// Check if remote mode is enabled via environment
+	remoteConfig = remote.LoadConfig()
+	if remoteConfig != nil {
+		remoteMode = true
+	}
 }
 
 // resolveStoreName returns the effective store name.
@@ -74,4 +84,14 @@ func openDB() (*store.DB, error) {
 		return nil, fmt.Errorf("migrate: %w", err)
 	}
 	return store.Open(dir)
+}
+
+// IsRemoteMode returns true if remote mode is enabled.
+func IsRemoteMode() bool {
+	return remoteMode && remoteConfig != nil
+}
+
+// GetRemoteConfig returns the remote configuration.
+func GetRemoteConfig() *remote.Config {
+	return remoteConfig
 }

@@ -13,6 +13,11 @@ var statusCmd = &cobra.Command{
 	Short: "Show memory statistics",
 	Long:  "Display aggregate statistics about stored insights and graph edges.",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// Remote mode: execute on remote server via SSH
+		if IsRemoteMode() {
+			return executeRemoteCommand(cmd, args)
+		}
+
 		db, err := openDB()
 		if err != nil {
 			return fmt.Errorf("open database: %w", err)

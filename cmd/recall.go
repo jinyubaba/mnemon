@@ -28,6 +28,11 @@ var recallCmd = &cobra.Command{
 	Long:  "Search for insights using intent-aware graph-enhanced retrieval. Use --basic for simple SQL LIKE matching.",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// Remote mode: execute on remote server via SSH
+		if IsRemoteMode() {
+			return executeRemoteCommand(cmd, args)
+		}
+
 		keyword := strings.Join(args, " ")
 
 		db, err := openDB()

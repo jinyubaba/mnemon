@@ -14,6 +14,11 @@ var forgetCmd = &cobra.Command{
 	Long:  "Mark an insight as deleted (soft delete). The data is preserved but excluded from queries.",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// Remote mode: execute on remote server via SSH
+		if IsRemoteMode() {
+			return executeRemoteCommand(cmd, args)
+		}
+
 		id := args[0]
 
 		db, err := openDB()

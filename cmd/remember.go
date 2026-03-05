@@ -31,6 +31,11 @@ var rememberCmd = &cobra.Command{
 	Long:  "Store a new insight into the memory graph with optional category, importance, and tags.",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// Remote mode: execute on remote server via SSH
+		if IsRemoteMode() {
+			return executeRemoteCommand(cmd, args)
+		}
+
 		content := strings.Join(args, " ")
 		if len(content) > 8000 {
 			return fmt.Errorf("content too long (%d chars, max 8000); consider chunking into multiple remember calls", len(content))
