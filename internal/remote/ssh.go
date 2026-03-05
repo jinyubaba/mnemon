@@ -1,11 +1,7 @@
 package remote
 
 import (
-	"bytes"
-	"fmt"
 	"os"
-	"os/exec"
-	"strings"
 )
 
 // Config holds remote SSH connection configuration.

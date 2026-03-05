@@ -2,11 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"strings"
 
 	"github.com/mnemon-dev/mnemon/internal/remote"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 // executeRemoteCommand executes a command on the remote server.
@@ -22,7 +21,7 @@ func executeRemoteCommand(cmd *cobra.Command, args []string) error {
 	cmdArgs := []string{cmd.Name()}
 
 	// Add flags
-	cmd.Flags().Visit(func(flag *cobra.Flag) {
+	cmd.Flags().Visit(func(flag *pflag.Flag) {
 		if flag.Changed {
 			cmdArgs = append(cmdArgs, fmt.Sprintf("--%s=%s", flag.Name, flag.Value.String()))
 		}

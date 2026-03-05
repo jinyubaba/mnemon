@@ -15,9 +15,9 @@ func ExecuteRemote(cfg *Config, args []string) (string, error) {
 		return "", fmt.Errorf("remote config is nil")
 	}
 
-	// Build the remote command
-	// Example: mnemon remember "content" --cat decision --imp 5
-	remoteCmd := "mnemon " + strings.Join(args, " ")
+	// Build the remote command with PATH setup
+	// Example: export PATH=$PATH:$HOME/go/bin && mnemon remember "content" --cat decision --imp 5
+	remoteCmd := "export PATH=$PATH:$HOME/go/bin && mnemon " + strings.Join(args, " ")
 
 	// Use native SSH client with key authentication
 	// ssh -o StrictHostKeyChecking=no -p port user@host 'command'
@@ -51,7 +51,7 @@ func ExecuteRemoteWithStdin(cfg *Config, args []string, stdin string) (string, e
 		return "", fmt.Errorf("remote config is nil")
 	}
 
-	remoteCmd := "mnemon " + strings.Join(args, " ")
+	remoteCmd := "export PATH=$PATH:$HOME/go/bin && mnemon " + strings.Join(args, " ")
 
 	// Use native SSH client with key authentication
 	sshArgs := []string{
